@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Introduction: Two-Lesson Classroom Guide</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --orange: #d97706;
+      --orange-soft: #ffedd5;
+      --red: #dc2626;
+      --red-soft: #fee2e2;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+      --border: #e5e7eb;
+      --code-bg: #111827;
+      --code-ink: #f9fafb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      color: white;
+      padding: 56px 24px;
+    }
+
+    header .wrap, main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      margin: 0 0 16px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      line-height: 1.2;
+      margin: 0 0 12px;
+    }
+
+    h3 {
+      margin: 24px 0 8px;
+      font-size: 1.25rem;
+    }
+
+    h4 {
+      margin: 18px 0 8px;
+      font-size: 1.05rem;
+    }
+
+    p { margin: 8px 0 12px; }
+
+    main { padding: 28px 20px 80px; }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      margin: 22px 0;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      max-width: 900px;
+      color: #dbeafe;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .tag {
+      border: 1px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 650;
+      font-size: 0.92rem;
+    }
+
+    .callout {
+      border-left: 6px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+
+    .callout.green { border-left-color: var(--green); background: var(--green-soft); }
+    .callout.orange { border-left-color: var(--orange); background: var(--orange-soft); }
+    .callout.red { border-left-color: var(--red); background: var(--red-soft); }
+    .callout.purple { border-left-color: var(--purple); background: var(--purple-soft); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .card h3, .card h4 { margin-top: 0; }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .bubble {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    code {
+      background: #eef2ff;
+      color: #111827;
+      padding: 2px 5px;
+      border-radius: 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.93em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-ink);
+      padding: 16px;
+      border-radius: 14px;
+      overflow-x: auto;
+      margin: 14px 0;
+      font-size: 0.94rem;
+      line-height: 1.45;
+      border: 1px solid #374151;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 18px 0;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: 750;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: #f9fafb;
+      margin: 12px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .diagram {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      padding: 18px;
+      border: 1px dashed #93c5fd;
+      border-radius: 16px;
+      background: #eff6ff;
+    }
+
+    .node {
+      background: white;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 14px 16px;
+      min-width: 150px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .arrow {
+      font-weight: 900;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .small { color: var(--muted); font-size: 0.95rem; }
+    .checklist li { margin: 8px 0; }
+
+    .lesson-label {
+      display: inline-block;
+      background: #0f172a;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .kbd {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-bottom-width: 3px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      body { background: white; }
+      header { padding: 28px 18px; }
+      section { break-inside: avoid; box-shadow: none; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Docker for Web Applications</h1>
+      <p class="subtitle">A two-lesson classroom walkthrough where we use Docker to solve a problem we already recognize: getting the same web application to run the same way on everyone’s machine.</p>
+      <div class="tag-row">
+        <span class="tag">Lesson 1: Images + Containers</span>
+        <span class="tag">Lesson 2: Docker Compose + PostgreSQL</span>
+        <span class="tag">Walkthrough</span>
+        <span class="tag">Project-Based</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>How We Are Going to Approach Docker</h2>
+      <p>Before we start typing commands, I want us to agree on the purpose of today’s topic. Docker is not here to make our application more complicated. Docker is here because web applications have a lot of moving parts: Python, packages, environment variables, databases, ports, and sometimes different operating systems.</p>
+
+      <p>We have all seen some version of this problem: the project works on one computer, but it fails on another. One person has the right Python version. Someone else forgot to create the virtual environment. Someone has PostgreSQL installed, someone else does not. Docker gives us a way to describe the environment clearly so the application has a better chance of running consistently.</p>
+
+      <div class="callout">
+        <strong>Main idea:</strong> Docker is not replacing our application. Docker packages our application together with the environment it needs.
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Our App Base</h3>
+          <p>We will use a familiar backend application, such as RecipeShare or another Flask app we already understand.</p>
+        </div>
+        <div class="card">
+          <h3>Our Timeline</h3>
+          <p>We will spend two lessons on this. In the first lesson we run containers and containerize the app. In the second lesson we add a database with Docker Compose.</p>
+        </div>
+        <div class="card">
+          <h3>Our Goal</h3>
+          <p>By the end, we want to start the application and database together with one command: <code>docker compose up</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What We Should Be Able to Do by the End</h2>
+      <p>By the end of these two lessons, we should be able to explain and use Docker in a practical way. I do not expect us to know every Docker command. I do expect us to understand what problem Docker solves and how to use it for a normal web application.</p>
+      <ul class="checklist">
+        <li>Explain the difference between a Dockerfile, an image, and a container.</li>
+        <li>Run a container that already exists on Docker Hub.</li>
+        <li>Build our own Docker image for a Flask application.</li>
+        <li>Run a web app container and open it in the browser.</li>
+        <li>Explain why the database should usually be a separate service.</li>
+        <li>Use Docker Compose to run the web application and PostgreSQL together.</li>
+        <li>Use environment variables to configure an app inside containers.</li>
+        <li>Use volumes so database data does not disappear every time we stop a container.</li>
+        <li>Troubleshoot common Docker errors without panicking.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The Mental Model I Want You to Keep</h2>
+      <p>If Docker feels confusing at first, it is usually because three words get mixed together: Dockerfile, image, and container. Let’s use a kitchen analogy.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Docker Concept</th>
+            <th>Analogy</th>
+            <th>What It Means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Dockerfile</strong></td>
+            <td>Recipe</td>
+            <td>The written instructions for building the application environment.</td>
+          </tr>
+          <tr>
+            <td><strong>Image</strong></td>
+            <td>Prepared meal / frozen package</td>
+            <td>The built package that contains the app, dependencies, and setup.</td>
+          </tr>
+          <tr>
+            <td><strong>Container</strong></td>
+            <td>Serving the meal</td>
+            <td>A running copy of an image.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="diagram">
+        <div class="node">Dockerfile<br><span class="small">the instructions</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Image<br><span class="small">the built package</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Container<br><span class="small">the running app</span></div>
+      </div>
+
+      <div class="callout green">
+        <strong>Say this out loud:</strong> We write a Dockerfile. Docker builds an image. Docker runs a container from that image.
+      </div>
+    </section>
+
+    <section>
+      <span class="lesson-label">Lesson 1</span>
+      <h2>Running Containers and Containerizing Our App</h2>
+      <p>Today I want us to get the first “magic moment.” First we will run something that someone else already packaged. Then we will package and run our own application.</p>
+
+      <h3>Part A — Why Are We Doing This?</h3>
+      <p>Let’s imagine we are about to share our final project with another developer. What do they need before the app can run?</p>
+      <ul>
+        <li>They need the correct version of Python.</li>
+        <li>They need the correct packages installed.</li>
+        <li>They may need database software installed.</li>
+        <li>They need the right environment variables.</li>
+        <li>They need to know which command starts the app.</li>
+      </ul>
+
+      <p>That is a lot of instructions, and every instruction is a place where something can go wrong. Docker lets us capture many of those instructions in files that can live in the project repository.</p>
+
+      <div class="callout orange">
+        <strong>Important:</strong> Docker reduces environment problems. It does not remove the need to understand routes, models, migrations, databases, or application code.
+      </div>
+
+      <h3>Part B — Check That Docker Is Available</h3>
+      <p>Let’s start by checking whether Docker is installed and whether Docker Compose is available.</p>
+      <pre><code>docker --version
+
+docker compose version</code></pre>
+
+      <details>
+        <summary>Mac and Windows setup</summary>
+        <p>Docker Desktop should be installed before class. On Windows, Docker Desktop usually uses WSL 2. If the command fails, open Docker Desktop and wait until it says the Docker engine is running.
+        Our MCON-364 VMs already have Docker Desktop setup</p>
+      </details>
+
+      <h3>Part C — Run Our First Container</h3>
+      <p>Now we will run Docker’s simplest test container.</p>
+      <pre><code>docker run hello-world</code></pre>
+
+      <p>Let’s slow down and describe what happened:</p>
+      <ul>
+        <li>Docker checked whether the <code>hello-world</code> image was already on our computer.</li>
+        <li>If it was not there, Docker downloaded it from Docker Hub.</li>
+        <li>Docker created a container from that image.</li>
+        <li>The container ran, printed a message, and stopped.</li>
+      </ul>
+
+      <p>Notice something important: not every container keeps running forever. Some containers do one job and exit. A web server container keeps running because it is waiting for requests.</p>
+
+      <h3>Part D — Run a Web Server Container</h3>
+      <p>Now let’s run a real web server. We are not writing the web server ourselves. We are using an existing image called <code>nginx</code>.</p>
+      <pre><code>docker run -p 8080:80 nginx</code></pre>
+
+      <p>Open this in the browser:</p>
+      <pre><code>http://localhost:8080</code></pre>
+
+      <div class="callout green">
+        <strong>Port mapping:</strong> Nginx listens on port <code>80</code> inside the container. Our computer is using port <code>8080</code>. The flag <code>-p 8080:80</code> connects those two ports.
+      </div>
+
+      <p>When we are done, stop the container with <span class="kbd">Ctrl</span> + <span class="kbd">C</span>.</p>
+
+      <h3>Part E — Look Around</h3>
+      <p>Now that we have run a few containers, let’s inspect what Docker knows about them.</p>
+      <pre><code>docker ps
+
+docker ps -a
+
+docker images</code></pre>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>What I Want You to Notice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docker ps</code></td>
+            <td>This shows containers that are currently running.</td>
+          </tr>
+          <tr>
+            <td><code>docker ps -a</code></td>
+            <td>This shows all containers, including containers that already stopped.</td>
+          </tr>
+          <tr>
+            <td><code>docker images</code></td>
+            <td>This shows images that are available locally on our computer.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Part F — Make Sure Our Flask App Works Without Docker</h3>
+      <p>Before we Dockerize anything, we should prove that the app works normally. Docker should not be used to hide a broken application.</p>
+      <pre><code>python -m venv .venv
+source .venv/bin/activate      # Mac/Linux
+# .venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+flask run</code></pre>
+
+      <p>If this project starts with <code>python run.py</code>, use that instead. The exact command depends on the application. The goal is simply to make sure the app runs before we add Docker.</p>
+
+      <h3>Part G — Add a <code>.dockerignore</code> File</h3>
+      <p>Next, we will tell Docker which local files should not be copied into the image. This is similar in spirit to <code>.gitignore</code>.</p>
+      <pre><code>.venv
+__pycache__
+*.pyc
+.git
+.gitignore
+.env
+instance
+.pytest_cache
+.DS_Store</code></pre>
+
+      <div class="callout">
+        <strong>Think about it this way:</strong> The Docker image should contain what the app needs to run. It should not contain our virtual environment, Git history, cache files, or local secrets.
+      </div>
+
+      <h3>Part H — Create the Dockerfile</h3>
+      <p>Now we are ready to write the recipe. Create a file named <code>Dockerfile</code> in the project root.</p>
+
+      <pre><code>FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]</code></pre>
+
+      <h4>Let’s read it line by line</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Line</th>
+            <th>How We Should Read It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>FROM python:3.12-slim</code></td>
+            <td>Start with an existing Python image. We do not build Linux and Python from scratch.</td>
+          </tr>
+          <tr>
+            <td><code>WORKDIR /app</code></td>
+            <td>Inside the container, use <code>/app</code> as the project folder.</td>
+          </tr>
+          <tr>
+            <td><code>COPY requirements.txt .</code></td>
+            <td>Copy the dependency list first.</td>
+          </tr>
+          <tr>
+            <td><code>RUN pip install ...</code></td>
+            <td>Install the Python packages inside the image.</td>
+          </tr>
+          <tr>
+            <td><code>COPY . .</code></td>
+            <td>Copy the rest of our application code.</td>
+          </tr>
+          <tr>
+            <td><code>EXPOSE 5000</code></td>
+            <td>Document that this app expects to listen on port 5000.</td>
+          </tr>
+          <tr>
+            <td><code>CMD ...</code></td>
+            <td>Tell Docker the default command to run when the container starts.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout orange">
+        <strong>Important detail:</strong> We use <code>--host=0.0.0.0</code> because the app must listen for traffic from outside the container. If Flask only listens on <code>127.0.0.1</code> inside the container, the browser on our computer may not be able to reach it.
+      </div>
+
+      <h3>Part I — Build the Image</h3>
+      <p>Now we ask Docker to build an image from the Dockerfile.</p>
+      <pre><code>docker build -t recipeshare .</code></pre>
+
+      <p>The dot at the end matters. It means “use the current folder as the build context.” In plain English, Docker is allowed to look at the files in this project folder while building the image.</p>
+
+      <h3>Part J — Run Our App Container</h3>
+      <p>Now we run a container from our own image.</p>
+      <pre><code>docker run -p 5000:5000 recipeshare</code></pre>
+
+      <p>Open:</p>
+      <pre><code>http://localhost:5000</code></pre>
+
+      <p>At this point, the Flask server may start, but the application may still fail when it tries to use the database. That is expected for many real Flask apps. The container has Python and our application code, but it still needs the correct database connection settings.</p>
+
+      <div class="callout orange">
+        <strong>Important Docker idea:</strong> Inside a container, <code>localhost</code> means “inside this container.” If PostgreSQL is running directly on our laptop, the Flask container cannot reach it by using <code>localhost</code>. From inside the container, we use <code>host.docker.internal</code> to point back to the host computer.
+      </div>
+
+      <h4>Use Two Environment Files</h4>
+      <p>For this first Docker demo, PostgreSQL is still running locally on our computer. That means we need one database URL for running Flask normally and a different database URL for running Flask inside Docker.</p>
+
+      <p>Create two files in the project root:</p>
+      <pre><code>.env.local
+.env.docker</code></pre>
+
+      <p>The regular local file uses <code>localhost</code>, because Flask is running directly on our computer:</p>
+      <pre><code># .env.local
+FLASK_APP=app
+FLASK_ENV=development
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/recipeshare</code></pre>
+
+      <p>The Docker version uses <code>host.docker.internal</code>, because Flask is running inside a container and PostgreSQL is running outside the container on our computer:</p>
+      <pre><code># .env.docker
+FLASK_APP=app
+FLASK_ENV=development
+DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/recipeshare</code></pre>
+
+      <div class="callout">
+        <strong>Read the two URLs carefully:</strong> The username, password, port, and database name are the same. The only part that changes is the host: <code>localhost</code> for normal local Flask, and <code>host.docker.internal</code> for Flask running inside Docker.
+      </div>
+
+      <h4>Copy the Docker Environment File into the Image</h4>
+      <p>For this classroom demo, we can copy the Docker-specific environment file into the container as <code>.env</code>. That lets the application keep looking for a normal <code>.env</code> file.</p>
+
+      <p>Update the Dockerfile so the Docker environment file is copied into the image after the application code is copied:</p>
+      <pre><code>FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+COPY .env.docker .env
+
+EXPOSE 5000
+
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]</code></pre>
+
+      <div class="callout red">
+        <strong>Security note:</strong> This is okay for a classroom local demo with fake local credentials. In a real deployed application, we usually do not bake secrets into the image. We pass environment variables at runtime or use a secret manager.
+      </div>
+
+      <h4>Rebuild and Run Again</h4>
+      <p>Because we changed the Dockerfile and environment file, rebuild the image:</p>
+      <pre><code>docker build -t recipeshare .</code></pre>
+
+      <p>Then run the container again:</p>
+      <pre><code>docker run -p 5000:5000 recipeshare</code></pre>
+
+      <p>On Mac and Windows with Docker Desktop, <code>host.docker.internal</code> usually works automatically. On Linux, we may need to add this option:</p>
+      <pre><code>docker run --add-host=host.docker.internal:host-gateway -p 5000:5000 recipeshare</code></pre>
+
+      <p>Now the Flask app is still containerized, but it is connecting to the PostgreSQL database running on our own computer. In the next lesson, we will improve this setup by putting PostgreSQL into its own Docker container and using Docker Compose.</p>
+
+      <details>
+        <summary>Cleaner alternative: pass the environment file when the container starts</summary>
+        <p>Instead of copying <code>.env.docker</code> into the image, we can pass it at runtime:</p>
+        <pre><code>docker run --env-file .env.docker -p 5000:5000 recipeshare</code></pre>
+        <p>This is closer to how we usually want to handle environment-specific configuration, because the same image can be reused with different settings.</p>
+      </details>
+
+      <h3>Lesson 1 Exit Ticket</h3>
+      <ol>
+        <li>What is the difference between an image and a container?</li>
+        <li>Why do we need port mapping?</li>
+        <li>Why do we use <code>--host=0.0.0.0</code> for Flask inside Docker?</li>
+        <li>What does the Dockerfile do for our project?</li>
+      </ol>
+    </section>
+
+    <section>
+      <span class="lesson-label">Lesson 2</span>
+      <h2>Docker Compose, PostgreSQL, and Multiple Services</h2>
+      <p>Last time, we successfully ran a Flask app in a container. That is a big step, but it is not the whole story. Real web applications usually need more than one thing running. The app needs a database. Sometimes it needs a frontend. Sometimes it needs Redis, a worker, or another service.</p>
+
+      <h3>Part A — Quick Recap</h3>
+      <p>Let’s remind ourselves of the flow:</p>
+      <div class="diagram">
+        <div class="node">Dockerfile<br><span class="small">instructions</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Image<br><span class="small">built app package</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Container<br><span class="small">running app</span></div>
+      </div>
+
+      <p>Today we add one more idea: instead of starting each container manually, we describe the whole local application environment in one file.</p>
+
+      <h3>Part B — Why Docker Compose?</h3>
+      <p>Imagine starting the app by hand every day. We would have to remember the command for the web app, the command for the database, the ports, the passwords, the database name, and the order to start everything.</p>
+
+      <p>Docker Compose lets us write those choices once.</p>
+      <pre><code>docker compose up</code></pre>
+
+      <p>With one command, Docker Compose can start:</p>
+      <ul>
+        <li>our Flask application</li>
+        <li>PostgreSQL</li>
+        <li>a private Docker network so the services can talk to each other</li>
+        <li>a volume so the database data can survive restarts</li>
+      </ul>
+
+      <h3>Part C — Environment Variables</h3>
+      <p>Our app should not hard-code the database connection. Instead, it should read configuration from environment variables. For example:</p>
+      <pre><code>DATABASE_URL=postgresql://postgres:postgres@db:5432/recipeshare</code></pre>
+
+      <div class="callout orange">
+        <strong>Very common mistake:</strong> Inside the web container, <code>localhost</code> means “this same web container.” It does not mean the database container. In Docker Compose, the database hostname is usually the service name, such as <code>db</code>.
+      </div>
+
+
+      <h3>Part D — Create <code>docker-compose.yml</code></h3>
+      <p>Now create a file named <code>docker-compose.yml</code> in the project root.</p>
+
+      <pre><code>services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_APP: app
+      FLASK_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/recipeshare
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recipeshare
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:</code></pre>
+
+      <h4>Let’s read the Compose file slowly</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Part</th>
+            <th>What It Means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>web</code></td>
+            <td>This is our Flask application service.</td>
+          </tr>
+          <tr>
+            <td><code>build: .</code></td>
+            <td>Build the web image using the Dockerfile in this folder.</td>
+          </tr>
+          <tr>
+            <td><code>db</code></td>
+            <td>This is our PostgreSQL service.</td>
+          </tr>
+          <tr>
+            <td><code>depends_on</code></td>
+            <td>Start the database container before starting the web container.</td>
+          </tr>
+          <tr>
+            <td><code>volumes</code></td>
+            <td>Store database files outside the temporary container layer.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Notice:</strong> The database container uses a ready-made PostgreSQL image. Our web service uses our own Dockerfile because that is where our application code lives.
+      </div>
+
+      <h3>Part E — Start the Full Application</h3>
+      <p>Now we start both services together.</p>
+      <pre><code>docker compose up --build</code></pre>
+
+      <p>Open:</p>
+      <pre><code>http://localhost:5000</code></pre>
+
+      <p>If we see errors, we do not guess randomly. We read the logs and ask: is this a Python problem, a database problem, a port problem, or a migration problem?</p>
+
+      <h3>Part F — Run Commands Inside the Web Container</h3>
+      <p>Once the app runs in Docker, application commands should also run inside Docker. That way, we are using the same Python packages and environment variables that the container uses.</p>
+
+      <pre><code>docker compose exec web flask --version</code></pre>
+
+      <p>If the app uses Flask-Migrate, run migrations inside the web container:</p>
+      <pre><code>docker compose exec web flask db upgrade</code></pre>
+
+      <p>If we changed the models and need to create a new migration:</p>
+      <pre><code>docker compose exec web flask db migrate -m "add recipe reviews"
+docker compose exec web flask db upgrade</code></pre>
+
+      <div class="callout green">
+        <strong>Key idea:</strong> The container is now the application environment. When we run app commands inside the container, the command sees the same dependencies and environment variables as the running app.
+      </div>
+
+      <h3>Part G — Compose Commands We Will Actually Use</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>When We Use It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docker compose up</code></td>
+            <td>Start all services.</td>
+          </tr>
+          <tr>
+            <td><code>docker compose up --build</code></td>
+            <td>Rebuild the web image and start the services.</td>
+          </tr>
+          <tr>
+            <td><code>docker compose down</code></td>
+            <td>Stop and remove the containers for this project.</td>
+          </tr>
+          <tr>
+            <td><code>docker compose logs web</code></td>
+            <td>Look at logs from the Flask app.</td>
+          </tr>
+          <tr>
+            <td><code>docker compose logs db</code></td>
+            <td>Look at logs from PostgreSQL.</td>
+          </tr>
+          <tr>
+            <td><code>docker compose exec web bash</code></td>
+            <td>Open a shell inside the web container.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Part H — Exercise: Prove the Database Persists</h3>
+      <p>Let’s prove that the volume matters.</p>
+      <ol>
+        <li>Start the app with <code>docker compose up</code>.</li>
+        <li>Create a recipe, user, or other record.</li>
+        <li>Stop the app with <span class="kbd">Ctrl</span> + <span class="kbd">C</span>.</li>
+        <li>Run <code>docker compose down</code>.</li>
+        <li>Start again with <code>docker compose up</code>.</li>
+        <li>Check whether the data is still there.</li>
+      </ol>
+
+      <p>If the data is still there, that is because the named volume <code>postgres_data</code> preserved the database files.</p>
+
+      <h3>Part I — Exercise: Reset the Database</h3>
+      <p>Sometimes in development we really do want to erase the local database and start fresh. This command does that.</p>
+      <div class="callout red">
+        <strong>Warning:</strong> This deletes the local database data for this Docker Compose project.
+      </div>
+
+      <pre><code>docker compose down -v</code></pre>
+
+      <p>Then restart:</p>
+      <pre><code>docker compose up</code></pre>
+
+      <p>Now the database starts fresh, because the volume was removed.</p>
+
+      <h3>Lesson 2 Exit Ticket</h3>
+      <ol>
+        <li>Why do we use Docker Compose instead of many separate <code>docker run</code> commands?</li>
+        <li>Why does the web container connect to <code>db</code> instead of <code>localhost</code>?</li>
+        <li>What problem does a volume solve?</li>
+        <li>Why should migrations run inside the web container?</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Common Errors We Should Expect</h2>
+      <p>When Docker fails, I do not want us to treat it like a mystery. Most beginner Docker errors fall into a few categories.</p>
+
+      <details>
+        <summary>Port is already allocated</summary>
+        <p>This means another process is already using the port on your computer.</p>
+        <pre><code>Error response from daemon: Ports are not available: bind: address already in use</code></pre>
+        <p>Two reasonable fixes:</p>
+        <ul>
+          <li>Stop the process that is using the port.</li>
+          <li>Use a different host port, such as <code>5050:5000</code>.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Flask runs, but the browser cannot connect</summary>
+        <p>The app may be listening only on <code>127.0.0.1</code> inside the container. For Docker, use:</p>
+        <pre><code>flask run --host=0.0.0.0 --port=5000</code></pre>
+      </details>
+
+      <details>
+        <summary>Database connection refused</summary>
+        <p>Check the database hostname. Inside Docker Compose, use the service name:</p>
+        <pre><code>postgresql://postgres:postgres@db:5432/recipeshare</code></pre>
+        <p>Do not use <code>localhost</code> from inside the web container to reach the database container.</p>
+      </details>
+
+      <details>
+        <summary>Changed code, but Docker still shows the old behavior</summary>
+        <p>The image may need to be rebuilt.</p>
+        <pre><code>docker compose up --build</code></pre>
+      </details>
+
+      <details>
+        <summary>The database connects, but tables are missing</summary>
+        <p>The database may be running, but the schema has not been created yet. Run migrations:</p>
+        <pre><code>docker compose exec web flask db upgrade</code></pre>
+      </details>
+    </section>
+
+    <section>
+      <h2>Homework: Add Docker Support to the Final Project</h2>
+      <p>For homework, I want you to practice Docker in a guided way. You are not being asked to invent a perfect production deployment. You are being asked to make your final project runnable with Docker so another developer can start it more easily.</p>
+
+      <div class="callout purple">
+        <strong>Homework idea:</strong> Add Docker support to your final project repository and include a short <code>DOCKER.md</code> file explaining how to run it.
+      </div>
+
+      <h3>Minimum Requirements</h3>
+      <ul>
+        <li>Add a <code>Dockerfile</code> for the backend app.</li>
+        <li>Add a <code>.dockerignore</code> file.</li>
+        <li>Add a <code>docker-compose.yml</code> file with at least two services: <code>web</code> and <code>db</code>.</li>
+        <li>Use PostgreSQL as the database service.</li>
+        <li>Document how to start and stop the project in a <code>DOCKER.md</code> file.</li>
+        <li>Include migration instructions.</li>
+      </ul>
+
+      <h3>Suggested <code>DOCKER.md</code> Outline</h3>
+      <p>You may use this outline as the structure for your documentation.</p>
+      <pre><code># Running the Project with Docker
+
+## 1. Requirements
+- Docker Desktop installed
+
+## 2. Start the app
+```bash
+docker compose up --build
+```
+
+## 3. Run migrations
+```bash
+docker compose exec web flask db upgrade
+```
+
+## 4. Open the app
+http://localhost:5000
+
+## 5. Stop the app
+```bash
+docker compose down
+```
+
+## 6. Reset the local database
+```bash
+docker compose down -v
+```
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Adding the Next.js Frontend to Docker Compose</h2>
+
+      <p>Our RecipeShare project has two separate repositories:</p>
+      <ul>
+        <li><strong>recipeshare</strong> — the Flask backend. This is where <code>docker-compose.yml</code> lives.</li>
+        <li><strong>recipeshare-ui / recipes-frontend</strong> — the Next.js frontend. This has its own <code>Dockerfile</code> and is built into a Docker image <em>separately</em>, before Compose is started.</li>
+      </ul>
+
+      <p>The reason we separate these concerns is practical: the frontend is a standalone deployable artifact. We build it once into a named image, and then Compose simply pulls that image by name — just like it pulls <code>postgres:16</code> from Docker Hub. The backend team does not need the frontend source code in their folder.</p>
+
+      <p>The architecture we are aiming for is:</p>
+
+      <div class="diagram">
+        <div class="node">frontend<br><span class="small">Next.js · port 3000</span></div>
+        <div class="arrow">↔</div>
+        <div class="node">web<br><span class="small">Flask API · port 5000</span></div>
+        <div class="arrow">↔</div>
+        <div class="node">db<br><span class="small">PostgreSQL · port 5432</span></div>
+      </div>
+
+      <div class="callout">
+        <strong>Recommended order:</strong>
+        <ol>
+          <li>Get the Flask backend and PostgreSQL working with Compose.</li>
+          <li>Build the frontend image with <code>docker build</code>.</li>
+          <li>Add the frontend service to <code>docker-compose.yml</code> referencing the pre-built image.</li>
+          <li>Bring everything up with <code>docker compose up</code>.</li>
+        </ol>
+      </div>
+
+      <h3>Part A — How the Frontend Calls the Backend</h3>
+
+      <p>All API calls in the frontend go through a thin helper file, <code>lib/api.js</code>. It reads a single environment variable — <code>NEXT_PUBLIC_BACKEND_URL</code> — to know the base URL. When that variable is not set (local dev), the base URL is empty, which means requests go to the same host the browser is already on (e.g. <code>http://localhost:3000/api/recipes</code>). Next.js then <em>rewrites</em> that path to the real Flask URL behind the scenes.</p>
+
+      <pre><code>// lib/api.js  (excerpt)
+
+// Empty string in dev (requests go to the same origin, Next.js rewrites them).
+// In production you could set this to a fully-qualified URL if needed.
+const publicBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+const BASE_URL = publicBackendUrl.replace(/\/$/, "");
+
+function buildUrl(path) {
+  return `${BASE_URL}${path}`;
+}
+
+export async function fetchRecipes() {
+  const response = await fetch(buildUrl("/api/recipes"));
+  if (!response.ok) throw new Error("Failed to load recipes");
+  return response.json();
+}
+
+export async function createRecipe(recipeData) {
+  const response = await fetch(buildUrl("/api/recipes"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(recipeData),
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || `Server error ${response.status}`);
+  }
+  return response.json();
+}</code></pre>
+
+      <p>The <code>buildUrl</code> helper keeps every <code>fetch</code> call consistent. All routing logic is in one place — if the base URL ever changes, only this file needs updating.</p>
+
+      <h3>Part B — The Proxy Rewrite in <code>next.config.mjs</code></h3>
+
+      <p>Next.js rewrites <code>/api/*</code> and <code>/auth/*</code> requests to the Flask backend. The target URL is read from the <code>BACKEND_URL</code> environment variable, which is a <em>server-side</em> variable (no <code>NEXT_PUBLIC_</code> prefix) because the rewrite only runs on the Next.js server, never in the browser.</p>
+
+      <div class="callout orange">
+        <strong>Two different environment variables — easy to confuse:</strong>
+        <ul>
+          <li><code>BACKEND_URL</code> — used by <em>the Next.js server process</em> to know where to forward proxy requests. It is never sent to the browser. This is the Docker service name URL: <code>http://web:5000</code>.</li>
+          <li><code>NEXT_PUBLIC_BACKEND_URL</code> — if set, prefixes every <code>fetch</code> call made from browser-side code. For our setup this stays empty; the browser always calls <code>/api/...</code> on the same origin and the Next.js rewrite handles the rest.</li>
+        </ul>
+      </div>
+
+      <pre><code>// next.config.mjs
+
+// Locally the Next.js dev server proxies to localhost:5001.
+// Inside Docker Compose the backend is reachable via the service name "web".
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
+
+const nextConfig = {
+  // Required for the multi-stage Docker build — produces .next/standalone.
+  output: "standalone",
+
+  async rewrites() {
+    return [
+      { source: "/api/:path*",  destination: `${BACKEND_URL}/api/:path*` },
+      { source: "/auth/:path*", destination: `${BACKEND_URL}/auth/:path*` },
+    ];
+  },
+};
+
+export default nextConfig;</code></pre>
+
+      <div class="callout green">
+        <strong>Why <code>output: "standalone"</code>?</strong> Next.js compiles everything needed to run <code>node server.js</code> into a single <code>.next/standalone</code> folder. That folder is self-contained — no separate <code>node_modules</code> install is needed at runtime. This is what makes the final Docker image lean.
+      </div>
+
+      <h3>Part C — Add a <code>.dockerignore</code> to the Frontend</h3>
+      <p>Create <code>recipes-frontend/.dockerignore</code> so Docker does not copy large or sensitive files into the build context:</p>
+      <pre><code>node_modules
+.next
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log</code></pre>
+
+      <h3>Part D — The Frontend Dockerfile (multi-stage)</h3>
+
+      <p>Create <code>recipes-frontend/Dockerfile</code>. The build is split into two stages so the final image is as small as possible.</p>
+
+      <p>Notice that <code>BACKEND_URL</code> is declared as an <code>ARG</code> and immediately promoted to an <code>ENV</code> in <strong>both</strong> stages:</p>
+      <ul>
+        <li>In the <strong>builder</strong> stage it is available when <code>npm run build</code> runs, so Next.js can bake the correct proxy target into the compiled server bundle.</li>
+        <li>In the <strong>runner</strong> stage it is available at runtime so the <code>node server.js</code> process can still read it if needed.</li>
+      </ul>
+
+      <pre><code># ── Stage 1: builder ──────────────────────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# BACKEND_URL is read by next.config.mjs during the build (for rewrites).
+ARG BACKEND_URL=http://web:5000
+ENV BACKEND_URL=$BACKEND_URL
+
+# Install dependencies first — this layer is cached unless package.json changes.
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+# ── Stage 2: runner ───────────────────────────────────────────────────────────
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ARG BACKEND_URL=http://web:5000
+ENV BACKEND_URL=$BACKEND_URL
+
+# Copy only the standalone output and static assets from the builder stage.
+COPY --from=builder /app/public            ./public
+COPY --from=builder /app/.next/standalone  ./
+COPY --from=builder /app/.next/static      ./.next/static
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]</code></pre>
+
+      <table>
+        <thead>
+          <tr><th>Stage</th><th>What Happens</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>builder</strong></td>
+            <td>Installs all npm dependencies and runs <code>npm run build</code>. <code>BACKEND_URL</code> is available here so the rewrite config is compiled with the correct target. Produces <code>.next/standalone</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>runner</strong></td>
+            <td>Starts from a fresh minimal Node image. Copies only the compiled output — no source code or dev dependencies. <code>BACKEND_URL</code> is also available here for runtime reads.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Part E — Build the Frontend Image Separately</h3>
+
+      <p>Because <code>docker-compose.yml</code> lives in the backend repository, not the frontend repository, we cannot use <code>build:</code> with a relative path to the frontend source. Instead we build the image by hand first and give it a name that Compose can reference.</p>
+
+      <p>From inside the <code>recipes-frontend</code> directory, run:</p>
+
+      <pre><code>docker build \
+  --build-arg BACKEND_URL=http://web:5000 \
+  -t recipeshare-frontend \
+  .</code></pre>
+
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>What It Does</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--build-arg BACKEND_URL=http://web:5000</code></td>
+            <td>Passes the value into the Dockerfile <code>ARG</code>. The Next.js build uses it to set the proxy destination in <code>next.config.mjs</code>. <code>web</code> is the Docker Compose service name for the Flask backend.</td>
+          </tr>
+          <tr>
+            <td><code>-t recipeshare-frontend</code></td>
+            <td>Tags the resulting image as <code>recipeshare-frontend</code>. This is the name Compose will reference.</td>
+          </tr>
+          <tr>
+            <td><code>.</code></td>
+            <td>The build context — the current directory (the frontend source).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout orange">
+        <strong>Rebuild when you change the code.</strong> Unlike <code>docker compose up --build</code>, a manually built image is not automatically refreshed when source files change. Re-run the <code>docker build</code> command whenever you want to push updated frontend code into the image.
+      </div>
+
+      <h3>Part F — Add the Frontend Service to <code>docker-compose.yml</code></h3>
+
+      <p><code>docker-compose.yml</code> lives in the <strong>backend</strong> repository. The frontend service uses <code>image:</code> instead of <code>build:</code> because the image was already built in the previous step.</p>
+
+      <pre><code>services:
+
+  # ── Flask backend ───────────────────────────────────────────────────────────
+  web:
+    build: .                      # Dockerfile is in the same folder as this file
+    ports:
+      - "5001:5000"               # host:container — access on localhost:5001
+    environment:
+      FLASK_APP: app
+      FLASK_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/recipeshare
+      SECRET_KEY: dev-secret-change-in-prod
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ── Next.js frontend ────────────────────────────────────────────────────────
+  frontend:
+    image: recipeshare-frontend   # pre-built image — run `docker build` first
+    ports:
+      - "3000:3000"
+    environment:
+      # Overrides the value baked in at build time if needed at runtime.
+      BACKEND_URL: http://web:5000
+      NODE_ENV: production
+    depends_on:
+      - web
+    restart: unless-stopped
+
+  # ── PostgreSQL database ─────────────────────────────────────────────────────
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recipeshare
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:</code></pre>
+
+      <div class="callout">
+        <strong>Port mapping — <code>5001:5000</code>:</strong> Flask listens on port 5000 <em>inside</em> its container. We expose it as port 5001 on the host so you can test the API directly from your laptop (<code>http://localhost:5001/api/recipes</code>). Inside the Docker network every container talks to Flask on the <em>internal</em> port 5000 — so the frontend uses <code>http://web:5000</code>, not 5001.
+      </div>
+
+      <h3>Part G — Start the Full Stack</h3>
+
+      <p>From the backend repository folder (where <code>docker-compose.yml</code> lives):</p>
+
+      <pre><code># 1. Start all services
+docker compose up
+
+# 2. In a separate terminal — run migrations once on first start
+docker compose exec web flask db upgrade</code></pre>
+
+      <p>Then open:</p>
+      <ul>
+        <li><strong>Frontend:</strong> <code>http://localhost:3000</code></li>
+        <li><strong>Backend API (direct):</strong> <code>http://localhost:5001/api/recipes</code></li>
+      </ul>
+
+      <h3>Part H — How a Request Flows End-to-End</h3>
+      <p>Here is what happens when a user visits <code>http://localhost:3000</code> and the page fetches recipes:</p>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="bubble">1</div>
+          <div>The browser calls <code>GET /api/recipes</code>. Because the page was served from port 3000, this request goes to the Next.js server — not to Flask.</div>
+        </div>
+        <div class="step">
+          <div class="bubble">2</div>
+          <div><code>buildUrl("/api/recipes")</code> in <code>api.js</code> returns <code>/api/recipes</code> (empty base URL in the browser context). Next.js matches the rewrite rule and forwards the request to <code>http://web:5000/api/recipes</code> on the internal Docker network. The browser never speaks to Flask directly.</div>
+        </div>
+        <div class="step">
+          <div class="bubble">3</div>
+          <div>Flask receives the request, queries PostgreSQL at hostname <code>db</code>, and returns JSON.</div>
+        </div>
+        <div class="step">
+          <div class="bubble">4</div>
+          <div>Next.js relays the JSON response back to the browser.</div>
+        </div>
+      </div>
+
+      <div class="callout green">
+        <strong>Why no CORS errors?</strong> The browser only ever talks to one origin — <code>localhost:3000</code>. The Next.js rewrite makes the frontend and backend appear to be the same server from the browser's point of view. Flask never receives a cross-origin request directly from the browser.
+      </div>
+
+      <h3>Part I — Useful Commands</h3>
+      <table>
+        <thead>
+          <tr><th>Command</th><th>What It Does</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docker build --build-arg BACKEND_URL=http://web:5000 -t recipeshare-frontend .</code></td>
+            <td>Build (or rebuild) the frontend image from the <code>recipes-frontend</code> directory.</td>
+          </tr>
+          <tr><td><code>docker compose up</code></td><td>Start all three services using the pre-built frontend image.</td></tr>
+          <tr><td><code>docker compose logs frontend</code></td><td>See Next.js startup logs and runtime errors.</td></tr>
+          <tr><td><code>docker compose logs web</code></td><td>See Flask logs.</td></tr>
+          <tr><td><code>docker compose exec web flask db upgrade</code></td><td>Run database migrations inside the Flask container.</td></tr>
+          <tr><td><code>docker compose down</code></td><td>Stop and remove all containers (data volume is kept).</td></tr>
+          <tr><td><code>docker compose down -v</code></td><td>Stop containers <em>and</em> remove the database volume — fresh start.</td></tr>
+        </tbody>
+      </table>
+
+      <details>
+        <summary>Frontend build succeeds but the app crashes at startup with "cannot find server.js"</summary>
+        <p>The most common cause is that <code>output: "standalone"</code> is missing from <code>next.config.mjs</code>. Without it, Next.js does not produce the <code>.next/standalone</code> folder and <code>server.js</code> does not exist. Add the option, then rebuild the image:</p>
+        <pre><code>docker build --build-arg BACKEND_URL=http://web:5000 -t recipeshare-frontend .</code></pre>
+      </details>
+
+      <details>
+        <summary>API calls return 502 or "connection refused"</summary>
+        <p>The frontend container cannot reach the backend. Check:</p>
+        <ul>
+          <li>The image was built with <code>--build-arg BACKEND_URL=http://web:5000</code> (service name <code>web</code>, internal port <code>5000</code> — not 5001).</li>
+          <li>The <code>BACKEND_URL</code> env var in <code>docker-compose.yml</code> also says <code>http://web:5000</code>.</li>
+          <li>The <code>web</code> service started successfully: <code>docker compose logs web</code>.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>I updated frontend code but the running container still shows old content</summary>
+        <p>The image is not rebuilt automatically. You must run <code>docker build</code> again from the <code>recipes-frontend</code> directory, then restart the Compose stack:</p>
+        <pre><code>docker build --build-arg BACKEND_URL=http://web:5000 -t recipeshare-frontend .
+docker compose up</code></pre>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
